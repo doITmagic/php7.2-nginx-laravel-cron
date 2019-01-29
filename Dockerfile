@@ -42,6 +42,13 @@ apt-get clean -y --force-yes
 COPY config/supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY config/nginx/default /etc/nginx/sites-enabled/default
 
+# Workaround https://github.com/docker-library/php/issues/207
+ENV PHP_LOG_STREAM="/tmp/stdout"
+RUN if [ -p $PHP_LOG_STREAM ] ; then echo pipe $PHP_LOG_STREAM exists ; else mkfifo $PHP_LOG_STREAM ; fi;
+RUN chmod 666 $PHP_LOG_STREAM
+COPY pipe-fpm-logs.sh /opt/pipe-fpm-logs.sh
+RUN chmod 777 /opt/pipe-fpm-logs.sh
+
 RUN usermod -u 1000 www-data
 
 # NGINX mountable directory for apps, mountable directories for config and logs
