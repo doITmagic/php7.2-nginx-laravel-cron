@@ -38,6 +38,21 @@ cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak && 
 apt-get autoclean -y --force-yes && \
 apt-get clean -y --force-yes
 
+# Install secure blackbox
+COPY secbboxphp_linux_x64.tar.gz /tmp/secbboxphp_linux_x64.tar.gz
+RUN mkdir -p /secbboxphp_linux_x64
+RUN tar -x -f /tmp/secbboxphp_linux_x64.tar.gz -C /secbboxphp_linux_x64
+
+WORKDIR /secbboxphp_linux_x64/ExtensionSources/sbb
+RUN /usr/bin/phpize7.2
+RUN ./configure --with-sbb=../../Libraries/Linux64/
+RUN make install
+
+ENV LD_LIBRARY_PATH="/secbboxphp_linux_x64/Libraries/Linux64/"
+RUN ln -s  /secbboxphp_linux_x64/Libraries/Linux64 /usr/lib/
+RUN echo "/secbboxphp_linux_x64/Libraries/Linux64" >> /etc/ld.so.conf
+RUN echo "extension=sbb.so" >> /etc/php/7.2/fpm/php.ini
+
 # copy config file for Supervisor
 COPY config/supervisord/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY config/nginx/default /etc/nginx/sites-enabled/default
