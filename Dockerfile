@@ -27,6 +27,7 @@ curl -sS http://getcomposer.org/installer | php -- --install-dir=/usr/bin/ --fil
 chmod +x /usr/bin/composer  && \
 # configure NGINX as non-daemon
 echo "daemon off;" >> /etc/nginx/nginx.conf  
+RUN mkdir -p $HOME/.composer/cache/files
 
 COPY config/php/php.ini /etc/php/7.2/fpm/php.ini 
 # configure php-fpm as non-daemon
@@ -67,7 +68,7 @@ RUN chmod 777 /opt/pipe-fpm-logs.sh
 RUN usermod -u 1000 www-data
 
 # NGINX mountable directory for apps, mountable directories for config and logs
-VOLUME ["/var/www","/etc/nginx/sites-available", "/etc/nginx/ssl", "/var/log/nginx"]
+VOLUME ["/var/www","/etc/nginx/sites-available", "/etc/nginx/ssl", "/var/log/nginx","$HOME/.composer/cache/files"]
 
 WORKDIR /var/www
 
