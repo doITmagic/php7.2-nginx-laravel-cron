@@ -39,6 +39,14 @@ cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak && 
 apt-get autoclean -y --force-yes && \
 apt-get clean -y --force-yes
 
+# Install Node.js
+RUN curl -sL https://deb.nodesource.com/setup_8.x | bash
+RUN apt-get install --yes nodejs
+RUN node -v
+RUN npm -v
+RUN npm i -g nodemon
+RUN nodemon -v
+
 # Install secure blackbox
 COPY secbboxphp_linux_x64.tar.gz /tmp/secbboxphp_linux_x64.tar.gz
 RUN mkdir -p /secbboxphp_linux_x64
