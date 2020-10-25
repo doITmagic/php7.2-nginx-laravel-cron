@@ -81,6 +81,6 @@ VOLUME ["/var/www","/etc/nginx/sites-available", "/etc/nginx/ssl", "/var/log/ngi
 WORKDIR /var/www
 
 # NGINX ports
-EXPOSE 80 443
+EXPOSE 80 443 6001
 
 CMD ["/usr/bin/supervisord"]
